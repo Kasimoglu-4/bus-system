@@ -1,0 +1,51 @@
+@model BusSystem.Web.Models.ViewModels.BusMenuViewModel
+
+@{
+    ViewData["Title"] = "Yolcu Menüsü";
+    Layout = "_Layout";
+}
+
+<div class="bus-menu container my-3">
+    <h2 class="bus-menu__title text-center mb-1">Otobüs: @Model.PlateNumber</h2>
+    @* <h5 class="text-center text-muted mb-2">@DateTime.Now.ToString("dddd dd.MM.yyyy", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</h5> *@
+    @* @if(!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <p class="text-center fst-italic mb-4">@Model.Description</p>
+    } *@
+
+    @foreach (var category in Model.Categories)
+    {
+        <div class="menu-category card mb-3">
+            <div class="menu-category__header card-header bg-primary text-white">
+                <h4 class="menu-category__title mb-0">@category.Name</h4>
+            </div>
+            <ul class="menu-category__items list-group list-group-flush">
+                @foreach (var item in category.MenuItems)
+                {
+                    <li class="menu-item list-group-item d-flex justify-content-between align-items-start flex-column flex-md-row">
+                        <div class="menu-item__details">
+                            <h5 class="menu-item__name mb-1 fw-semibold">@item.Name</h5>
+                            @* Food Image with lazy loading *@
+                            @if(!string.IsNullOrWhiteSpace(item.Image))
+                            {
+                                <img src="@item.Image" 
+                                     style="width:100px;height:100px;object-fit:cover;" 
+                                     class="menu-item__image mb-2 rounded" 
+                                     alt="@item.Name"
+                                     loading="lazy"
+                                     width="100"
+                                     height="100" />
+                            }
+                            <br />
+                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                            {
+                                <small class="menu-item__description text-muted">@item.Description</small>
+                            } 
+                        </div>
+                        <span class="menu-item__price fw-bold">@item.Price.ToString("C")</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>

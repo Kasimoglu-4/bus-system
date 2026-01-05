@@ -1,0 +1,80 @@
+@model IEnumerable<BusSystem.Admin.Web.Models.MenuItemDto>
+@{
+    ViewData["Title"] = "Menu Items";
+}
+
+<partial name="_BackButton" />
+
+<h1 class="page-title mb-4">Menu Items</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="notification notification--success alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <strong>Success!</strong> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="notification notification--error alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong>Error!</strong> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+{
+    <a asp-action="Create" class="action-button btn btn-primary mb-3">
+        <i class="bi bi-plus-circle"></i> Add Menu Item
+    </a>
+}
+<table class="data-table table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Bus</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var m in Model)
+    {
+        <tr class="data-table__row">
+            <td class="data-table__cell">@m.MenuItemId</td>
+            <td class="data-table__cell">@m.Name</td>
+            <td class="data-table__cell">@m.Description</td>
+            <td class="data-table__cell data-table__cell--image">
+                @if (!string.IsNullOrEmpty(m.Image))
+                {
+                    <img src="@m.Image" 
+                         alt="@m.Name" 
+                         loading="lazy" 
+                         width="60" 
+                         height="60" 
+                         style="width:60px;height:60px;object-fit:cover;" 
+                         class="item-thumbnail" />
+                }
+            </td>
+            <td class="data-table__cell">@m.Price.ToString("C")</td>
+            <td class="data-table__cell">@m.CategoryName</td>
+            <td class="data-table__cell">@m.BusPlateNumber</td>
+            <td class="data-table__cell data-table__cell--actions">
+                <a asp-action="Edit" asp-route-id="@m.MenuItemId">Edit</a>
+                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+                {
+                    <text> | </text>
+                    <a asp-action="Delete" asp-route-id="@m.MenuItemId">Delete</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

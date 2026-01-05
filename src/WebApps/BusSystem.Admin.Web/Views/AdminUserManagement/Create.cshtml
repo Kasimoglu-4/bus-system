@@ -1,0 +1,138 @@
+@model BusSystem.Admin.Web.Models.AdminUserDto
+@{
+    ViewData["Title"] = "Create Admin User";
+}
+
+<partial name="_BackButton" />
+
+<h1>Create Admin User</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="mt-4">
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label">Username</label>
+        <input asp-for="UserName" class="form-control" required />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" type="email" class="form-control" required />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label">First Name</label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label">Last Name</label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Profile Picture</label>
+        <div class="input-group">
+            <input type="file" class="form-control" id="pictureFile" name="pictureFile" accept="image/jpeg,image/jpg,image/png" />
+            <label class="input-group-text" for="pictureFile">
+                <i class="bi bi-upload"></i> Choose Image
+            </label>
+        </div>
+        <small class="form-text text-muted">Select a profile picture (optional). Supported formats: JPG, JPEG, PNG.</small>
+        <div id="imagePreview" class="mt-2" style="display:none;">
+            <img id="previewImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label">Password</label>
+        <input asp-for="Password" type="password" class="form-control" required />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" required />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Role" class="form-label">Role</label>
+        <select asp-for="Role" class="form-select" required>
+            <option value="">-- Select Role --</option>
+            <option value="Manager">Manager</option>
+            <option value="Admin" selected>Admin</option>
+            <option value="SuperAdmin">SuperAdmin</option>
+        </select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+        <small class="form-text text-muted">
+            <strong>Manager:</strong> Can view and edit content<br/>
+            <strong>Admin:</strong> Can create, edit, and delete buses/menus<br/>
+            <strong>SuperAdmin:</strong> Full system access including user management
+        </small>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            // Password confirmation validation
+            $('form').on('submit', function (e) {
+                var password = $('input[name="Password"]').val();
+                var confirmPassword = $('input[name="ConfirmPassword"]').val();
+                
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    $('span[data-valmsg-for="ConfirmPassword"]').text('Passwords do not match.');
+                    return false;
+                }
+            });
+            
+            $('input[name="ConfirmPassword"]').on('input', function () {
+                var password = $('input[name="Password"]').val();
+                var confirmPassword = $(this).val();
+                
+                if (password !== confirmPassword) {
+                    $('span[data-valmsg-for="ConfirmPassword"]').text('Passwords do not match.');
+                } else {
+                    $('span[data-valmsg-for="ConfirmPassword"]').text('');
+                }
+            });
+
+            // Image preview
+            $('#pictureFile').on('change', function(e) {
+                var file = e.target.files[0];
+                if (file) {
+                    // Check file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB');
+                        $(this).val('');
+                        $('#imagePreview').hide();
+                        return;
+                    }
+                    
+                    // Check file type
+                    if (!file.type.match('image.*')) {
+                        alert('Please select an image file');
+                        $(this).val('');
+                        $('#imagePreview').hide();
+                        return;
+                    }
+                    
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#previewImg').attr('src', e.target.result);
+                        $('#imagePreview').show();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#imagePreview').hide();
+                }
+            });
+        });
+    </script>
+}

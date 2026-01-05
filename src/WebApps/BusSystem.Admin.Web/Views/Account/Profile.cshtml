@@ -1,0 +1,155 @@
+@model BusSystem.Admin.Web.Models.ViewModels.ProfileEditViewModel
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">My Profile</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form asp-action="Profile" enctype="multipart/form-data" method="post" class="row g-3">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ExistingPicturePath" />
+    
+    <div class="col-md-6">
+        <label asp-for="FirstName" class="form-label">First name</label>
+        <input asp-for="FirstName" class="form-control" value="@Model.FirstName" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="LastName" class="form-label">Last name</label>
+        <input asp-for="LastName" class="form-control" value="@Model.LastName" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Email" class="form-label">E-mail address</label>
+        <input asp-for="Email" class="form-control" value="@Model.Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="UserName" class="form-label">User name</label>
+        <input asp-for="UserName" class="form-control" value="@Model.UserName" disabled readonly style="background-color: #e9ecef;" />
+    </div>
+
+    <hr class="mt-4" />
+
+    <h5>Change Password</h5>
+    <div class="col-md-4">
+        <label asp-for="CurrentPassword" class="form-label">Current password</label>
+        <input asp-for="CurrentPassword" type="password" class="form-control" />
+        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="NewPassword" class="form-label">New password</label>
+        <input asp-for="NewPassword" type="password" class="form-control" />
+        <span asp-validation-for="NewPassword" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="ConfirmPassword" class="form-label">Confirm password</label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <hr class="mt-4" />
+
+    <h5>Profile Picture</h5>
+    @if (!string.IsNullOrEmpty(Model.ExistingPicturePath))
+    {
+        <div class="col-12 mb-3">
+            <div class="mb-2">
+                <img src="@Model.ExistingPicturePath" 
+                     alt="Current Profile picture" 
+                     loading="lazy" 
+                     width="150" 
+                     height="150" 
+                     class="img-thumbnail" 
+                     style="max-width: 150px; max-height: 150px;" />
+            </div>
+            <small class="text-muted">Current picture</small>
+        </div>
+    }
+    <div class="col-md-6">
+        <label asp-for="ProfilePicture" class="form-label">Profile picture</label>
+        <div class="input-group">
+            <input asp-for="ProfilePicture" type="file" class="form-control" id="profilePictureFile" accept="image/jpeg,image/jpg,image/png" />
+            <label class="input-group-text" for="profilePictureFile">
+                <i class="bi bi-upload"></i> Choose Image
+            </label>
+        </div>
+        <small class="form-text text-muted">Upload a new profile picture (optional). Supported formats: JPG, JPEG, PNG.</small>
+        <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+        <div id="imagePreview" class="mt-2" style="display:none;">
+            <img id="previewImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+            <div><small class="text-muted">New picture preview</small></div>
+        </div>
+    </div>
+
+    <div class="col-12 mt-4">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <a asp-action="Index" asp-controller="AdminPanel" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            // Password confirmation validation
+            $('input[name="NewPassword"], input[name="ConfirmPassword"]').on('input', function () {
+                var newPassword = $('input[name="NewPassword"]').val();
+                var confirmPassword = $('input[name="ConfirmPassword"]').val();
+                
+                if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+                    $('span[data-valmsg-for="ConfirmPassword"]').text('Passwords do not match.');
+                } else {
+                    $('span[data-valmsg-for="ConfirmPassword"]').text('');
+                }
+            });
+
+            // Image preview
+            $('#profilePictureFile').on('change', function(e) {
+                var file = e.target.files[0];
+                if (file) {
+                    // Check file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB');
+                        $(this).val('');
+                        $('#imagePreview').hide();
+                        return;
+                    }
+                    
+                    // Check file type
+                    if (!file.type.match('image.*')) {
+                        alert('Please select an image file');
+                        $(this).val('');
+                        $('#imagePreview').hide();
+                        return;
+                    }
+                    
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#previewImg').attr('src', e.target.result);
+                        $('#imagePreview').show();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#imagePreview').hide();
+                }
+            });
+        });
+    </script>
+}

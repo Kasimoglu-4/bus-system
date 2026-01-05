@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BusSystem.Web</title>
+    
+    <!-- Critical CSS inlined for faster initial render -->
+    <style>
+        body{margin:0;background:#f8f9fa;font-family:system-ui,-apple-system,sans-serif;transform:translateZ(0);-webkit-transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+        html{-webkit-overflow-scrolling:touch}
+        .hero-banner{position:relative;overflow:hidden;height:400px;will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0)}
+        .hero-banner__image{height:100%;width:100%;object-fit:cover;object-position:center bottom;transform:translateZ(0);-webkit-transform:translateZ(0)}
+        .hero-banner__branding{position:absolute;top:20px;left:20px;z-index:2;display:flex;align-items:center;will-change:transform;transform:translateZ(0);-webkit-transform:translateZ(0)}
+        .hero-banner__logo{height:64px;width:64px;border-radius:32px}
+        .hero-banner__title{font-size:2rem;color:#000!important;margin-left:0.5rem;font-weight:700}
+        @@media(max-width:576px){.hero-banner{height:auto;will-change:auto}.hero-banner__image{height:auto;object-fit:contain;transform:translate3d(0,0,0);-webkit-transform:translate3d(0,0,0)}.hero-banner__branding{top:12px;left:12px}.hero-banner__logo{height:40px;width:40px;border-radius:20px}.hero-banner__title{font-size:1.25rem}.card,.list-group-item,.list-group-item img{transform:translateZ(0);-webkit-transform:translateZ(0)}}
+    </style>
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BusSystem.Web.styles.css" asp-append-version="true" />
+    
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" type="image/webp" href="~/images/bus-cover.webp" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/webp" href="~/images/bus-logo.webp" />
+    
+    <!-- Add favicon -->
+    <link rel="icon" type="image/x-icon" href="~/bus-icon.ico" />
+</head>
+<body>
+    <!-- <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BusSystem.Web</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header> -->
+
+    @if (!(ViewData["HideBanner"] as bool? ?? false))
+    {
+        <!-- Hero banner with branding -->
+        <div class="hero-banner">
+            <picture>
+                <source srcset="@Url.Content("~/images/bus-cover.webp")" type="image/webp">
+                <img src="@Url.Content("~/images/bus-cover.webp")" 
+                     class="hero-banner__image img-fluid w-100" 
+                     alt="Bus System Hero Banner"
+                     width="1920"
+                     height="400"
+                     fetchpriority="high" />
+            </picture>
+
+            <!-- Branding: Logo + Title -->
+            <div class="hero-banner__branding d-flex align-items-center">
+                <picture>
+                    <source srcset="@Url.Content("~/images/bus-logo.webp")" type="image/webp">
+                    <img src="@Url.Content("~/images/bus-logo.png")" 
+                         alt="Bus System Logo" 
+                         class="hero-banner__logo me-2"
+                         width="80"
+                         height="80" />
+                </picture>
+                <span class="hero-banner__title fw-bold text-white">MVS Games</span>
+            </div>
+        </div>
+    }
+
+    <div class="container mt-4">
+        <main role="main" class="main-content pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="site-footer border-top text-muted">
+        <div class="container">
+            &copy; 2025 - BusSystem.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    
+    <!-- Optimized script loading: Remove jQuery if not needed, use Bootstrap without jQuery -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,62 @@
+@model BusSystem.Admin.Web.Models.BusDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Edit Bus";
+    var busServiceUrl = Configuration["ApiUrls:BusService"];
+}
+
+<partial name="_BackButton" />
+
+<h1>Edit Bus</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" method="post" asp-route-id="@Model.BusId">
+            <input type="hidden" asp-for="BusId" />
+            <div class="mb-3">
+                <label asp-for="PlateNumber" class="form-label">Plate Number</label>
+                <input asp-for="PlateNumber" class="form-control" required />
+                <span asp-validation-for="PlateNumber" class="text-danger"></span>
+                <small class="form-text text-muted">Note: Changing the plate number will regenerate the QR code.</small>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Current QR Code</h5>
+            </div>
+            <div class="card-body text-center">
+                @if (!string.IsNullOrEmpty(Model.QRCodeUrl))
+                {
+                    <img src="@(busServiceUrl)@(Model.QRCodeUrl)" 
+                         alt="QR Code for @Model.PlateNumber" 
+                         loading="lazy" 
+                         width="200" 
+                         height="200" 
+                         style="width:200px;height:200px;" 
+                         class="img-thumbnail mb-2" />
+                    <br />
+                    <a asp-action="DownloadQr" asp-route-id="@Model.BusId" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                }
+                else
+                {
+                    <p class="text-muted">No QR Code available</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

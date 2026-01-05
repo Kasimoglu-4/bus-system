@@ -1,0 +1,263 @@
+@*
+    Admin Layout with Sidebar
+*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    
+    <!-- Preconnect to external domains for faster resource loading -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Add favicon -->
+    <link rel="icon" type="image/x-icon" href="~/bus-icon.ico" />
+    
+    <!-- Critical CSS - Load synchronously -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <!-- Non-critical CSS - Load asynchronously with fallback -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous"></noscript>
+    
+    <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet" /></noscript>
+    
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            transition: width .3s ease;
+            /*height: 100vh;*/
+            min-height: 100vh;
+            overflow-y: auto;
+            position: relative; /* ensure positioning context for dropdown */
+        }
+        .sidebar.collapsed {
+            width: 65px;
+            overflow: visible; /* allow dropdown to extend outside */
+        }
+        .sidebar.collapsed .sidebar__brand-text,
+        .sidebar.collapsed .sidebar__link-text {
+            display: none;
+        }
+        .sidebar.collapsed hr {
+            display: none;
+        }
+        .sidebar.collapsed .nav-link {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .sidebar.collapsed .sidebar__user-label {
+            /* hide label in collapsed state, leaving only the icon */
+            display: none !important;
+        }
+        .sidebar.collapsed .sidebar__user-avatar {
+            margin-right: 0;
+        }
+        .sidebar.collapsed #dropdownUser::after {
+            display: none;
+        }
+        /* Allow dropdown interaction even when collapsed */
+        .sidebar.collapsed #dropdownUser {
+            pointer-events: auto;
+        }
+
+        /* Position the dropdown menu just outside the collapsed sidebar */
+        .sidebar.collapsed .dropdown-menu {
+            position: absolute;
+            left: 70px; /* 60px sidebar + 10px gap */
+            top: auto;
+        }
+
+        /* Ensure dropdown menu appears above other elements */
+        .dropdown-menu {
+            z-index: 1050;
+        }
+
+        /* Ensure dropdown toggle and content are visible */
+        .dropdown {
+            position: relative;
+            z-index: 1040;
+        }
+
+        #dropdownUser {
+            color: #212529 !important;
+            white-space: nowrap;
+            overflow: visible;
+            max-width: 100%;
+        }
+
+        #dropdownUser strong {
+            color: #212529 !important;
+            flex: 1;
+            min-width: 0;
+        }
+
+        #dropdownUser .sidebar__user-avatar {
+            flex-shrink: 0;
+        }
+
+        /* Hide/show dashboard icon variations */
+        .sidebar__nav-icon--collapsed {
+            display: none !important;
+            width: 28px;
+            height: 28px;
+            font-size: 0.9rem;
+        }
+        .sidebar.collapsed .sidebar__nav-icon--collapsed {
+            display: inline-flex !important;
+        }
+        .sidebar.collapsed .sidebar__nav-icon--expanded {
+            display: none;
+        }
+        .nav-link.active {
+            background-color: #0d6efd;
+            color: #fff !important;
+        }
+        .sidebar.collapsed .nav-link.active {
+            background-color: transparent;
+            color: #0d6efd !important;
+        }
+        .main-wrapper {
+            min-height: 100vh;
+            display:flex;
+            flex-direction:column;
+            height:auto;
+            overflow-y:auto;
+        }
+        main[role="main"] {
+            flex:1 0 auto;
+        }
+        footer {
+            flex-shrink:0;
+        }
+    </style>
+</head>
+<body>
+    <nav id="sidebarMenu" class="sidebar d-flex flex-column flex-shrink-0 p-3 bg-light border-end">
+        <div class="sidebar__header d-flex justify-content-between align-items-center mb-3">
+            <a asp-controller="AdminPanel" asp-action="Index" class="sidebar__brand-link text-decoration-none d-flex align-items-center">
+                <span class="sidebar__brand-text fs-5 fw-semibold">Admin Panel</span>
+            </a>
+            <button class="btn btn-outline-secondary btn-sm" id="sidebarToggle" title="Toggle sidebar">
+                ☰
+            </button>
+        </div>
+        <hr />
+        <ul class="sidebar__nav nav nav-pills flex-column mb-auto flex-grow-1 overflow-auto">
+            <li class="sidebar__nav-item nav-item">
+                <a asp-controller="AdminPanel" asp-action="Index" class="nav-link @(string.Equals(ViewContext.RouteData.Values["controller"] as string, "AdminPanel", StringComparison.OrdinalIgnoreCase) ? "active" : "link-dark")">
+                    <i class="bi bi-speedometer2 me-2 sidebar__nav-icon--expanded"></i>
+                    <span class="sidebar__link-text">Dashboard</span>
+                    <span class="sidebar__nav-icon--collapsed bg-warning text-dark fw-bold rounded d-inline-flex align-items-center justify-content-center">D</span>
+                </a>
+            </li>
+            <li class="sidebar__nav-item nav-item">
+                <a asp-controller="BusManagement" asp-action="Index" class="nav-link @(string.Equals(ViewContext.RouteData.Values["controller"] as string, "BusManagement", StringComparison.OrdinalIgnoreCase) ? "active" : "link-dark")"><i class="bi bi-bus-front me-2 sidebar__nav-icon--expanded"></i><span class="sidebar__link-text">Buses</span><span class="sidebar__nav-icon--collapsed bg-info text-dark fw-bold rounded d-inline-flex align-items-center justify-content-center">B</span></a>
+            </li>
+            <li class="sidebar__nav-item nav-item">
+                <a asp-controller="CategoryManagement" asp-action="Index" class="nav-link @(string.Equals(ViewContext.RouteData.Values["controller"] as string, "CategoryManagement", StringComparison.OrdinalIgnoreCase) ? "active" : "link-dark")"><i class="bi bi-tags me-2 sidebar__nav-icon--expanded"></i><span class="sidebar__link-text">Categories</span><span class="sidebar__nav-icon--collapsed bg-success text-white fw-bold rounded d-inline-flex align-items-center justify-content-center">C</span></a>
+            </li>
+            <li class="sidebar__nav-item nav-item">
+                <a asp-controller="MenuItemManagement" asp-action="Index" class="nav-link @(string.Equals(ViewContext.RouteData.Values["controller"] as string, "MenuItemManagement", StringComparison.OrdinalIgnoreCase) ? "active" : "link-dark")"><i class="bi bi-list-ul me-2 sidebar__nav-icon--expanded"></i><span class="sidebar__link-text">Menu Items</span><span class="sidebar__nav-icon--collapsed bg-danger text-white fw-bold rounded d-inline-flex align-items-center justify-content-center">M</span></a>
+            </li>
+            @if (User.IsInRole("SuperAdmin"))
+            {
+                <li class="sidebar__nav-item nav-item">
+                    <a asp-controller="AdminUserManagement" asp-action="Index" class="nav-link @(string.Equals(ViewContext.RouteData.Values["controller"] as string, "AdminUserManagement", StringComparison.OrdinalIgnoreCase) ? "active" : "link-dark")"><i class="bi bi-people me-2 sidebar__nav-icon--expanded"></i><span class="sidebar__link-text">Users</span><span class="sidebar__nav-icon--collapsed bg-secondary text-white fw-bold rounded d-inline-flex align-items-center justify-content-center">U</span></a>
+                </li>
+            }
+        </ul>
+        <hr />
+        <div class="sidebar__user-dropdown dropdown mt-auto">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle link-dark" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%; max-width: 230px;">
+                @{
+                    string? pic = User.FindFirst("PicturePath")?.Value;
+                }
+                @if (!string.IsNullOrEmpty(pic))
+                {
+                    <img src="@pic" 
+                         alt="avatar" 
+                         loading="lazy" 
+                         width="32" 
+                         height="32" 
+                         class="sidebar__user-avatar rounded-circle me-2" 
+                         style="width:32px;height:32px;min-width:32px;object-fit:cover;flex-shrink:0;" />
+                }
+                else
+                {
+                    <span class="material-icons fs-4 me-2" style="flex-shrink:0;">account_circle</span>
+                }
+                <strong class="sidebar__user-label" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;color:#212529 !important;display:inline-block !important;visibility:visible !important;opacity:1 !important;">@((User.Identity?.Name) ?? "Admin")</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdownUser">
+                <li class="px-3 py-2">
+                    <small class="text-muted">Role:</small>
+                    @{
+                        var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "Unknown";
+                        var badgeClass = role switch
+                        {
+                            "SuperAdmin" => "bg-danger",
+                            "Admin" => "bg-primary",
+                            "Manager" => "bg-success",
+                            _ => "bg-secondary"
+                        };
+                    }
+                    <span class="badge @badgeClass">@role</span>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Profile</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="m-0 p-0">
+                        <button type="submit" class="dropdown-item">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-wrapper flex-grow-1 p-4">
+        <main role="main" class="main-content pb-3">
+            @RenderBody()
+        </main>
+        <footer class="site-footer border-top text-muted mt-auto">
+            <div class="container">
+                &copy; 2025 - BusSystem Admin - <a href="#">Privacy</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
+    <script>
+        // Sidebar toggle - Inline for immediate execution
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebarMenu');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            if (!sidebar || !sidebarToggle) return;
+            
+            // Sidebar is expanded by default. Remove any persisted value on each load
+            localStorage.removeItem('sidebarCollapsed');
+
+            // Toggle collapsed/expanded state (no persistence)
+            sidebarToggle.addEventListener('click', function () {
+                sidebar.classList.toggle('collapsed');
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

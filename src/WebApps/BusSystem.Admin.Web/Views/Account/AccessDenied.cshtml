@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "Access Denied";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-danger">Access Denied</h1>
+<p>You do not have permission to access this page.</p>
+@if (ViewData["ReturnUrl"] is string url)
+{
+    <p>
+        <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@url">Login with different account</a>
+    </p>
+}

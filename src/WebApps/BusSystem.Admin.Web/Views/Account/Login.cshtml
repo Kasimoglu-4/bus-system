@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Admin Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["HideBanner"] = true; // tell layout not to show banner
+}
+
+<h1 class="text-center mb-4">Admin Login</h1>
+
+@if (!string.IsNullOrEmpty(Context.Request.Query["message"]))
+{
+    var messageType = Context.Request.Query["type"].ToString();
+    var alertClass = messageType switch
+    {
+        "error" => "alert-danger",
+        "info" => "alert-info",
+        _ => "alert-warning"
+    };
+    var iconClass = messageType switch
+    {
+        "error" => "bi-exclamation-triangle-fill",
+        "info" => "bi-info-circle-fill",
+        _ => "bi-exclamation-circle-fill"
+    };
+    
+    <div class="alert @alertClass alert-dismissible fade show mx-auto" style="max-width:500px;" role="alert">
+        <i class="bi @iconClass"></i>
+        @Context.Request.Query["message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form asp-action="Login" method="post" class="mx-auto" style="max-width:400px;">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label class="form-label">User Name</label>
+        <input name="userName" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input name="password" type="password" class="form-control" required />
+    </div>
+    <div class="mb-3 text-end">
+        <a asp-action="ForgotPassword" class="text-decoration-none small">Forgot Password?</a>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Login</button>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

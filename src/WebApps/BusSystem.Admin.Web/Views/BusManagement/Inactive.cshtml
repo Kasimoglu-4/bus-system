@@ -1,0 +1,87 @@
+@model IEnumerable<BusSystem.Admin.Web.Models.BusDto>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Inactive Buses";
+    var busServiceUrl = Configuration["ApiUrls:BusService"];
+}
+
+<partial name="_BackButton" />
+
+<h1 class="page-title mb-4">Inactive Buses</h1>
+
+<div class="notification notification--info alert alert-info" role="alert">
+    <i class="bi bi-info-circle"></i>
+    <strong>Info:</strong> These buses don't have any categories or menu items assigned to them yet.
+</div>
+
+@if (!Model.Any())
+{
+    <div class="notification notification--success alert alert-success" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <strong>Great!</strong> All buses have categories assigned. There are no inactive buses.
+    </div>
+}
+else
+{
+    <p class="inactive-buses__count text-muted">
+        <strong>@Model.Count()</strong> bus@(Model.Count() == 1 ? "" : "es") without categories found.
+    </p>
+
+    <table class="data-table table table-striped">
+        <thead>
+            <tr>
+                <th>Bus ID</th>
+                <th>Plate Number</th>
+                <th>QR Code</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var bus in Model)
+    {
+            <tr class="data-table__row">
+                <td class="data-table__cell">@bus.BusId</td>
+                <td class="data-table__cell">@bus.PlateNumber</td>
+                <td class="data-table__cell data-table__cell--qr">
+                    @if (!string.IsNullOrEmpty(bus.QRCodeUrl))
+                    {
+                        <img src="@(busServiceUrl)@(bus.QRCodeUrl)" 
+                             alt="QR Code for @bus.PlateNumber" 
+                             loading="lazy" 
+                             width="60" 
+                             height="60" 
+                             style="width:60px;height:60px;" 
+                             class="qr-code img-thumbnail" />
+                        <br />
+                        <a asp-action="DownloadQr" asp-route-id="@bus.BusId" class="qr-code__download btn btn-sm btn-outline-secondary mt-1">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="qr-code__placeholder text-muted">No QR Code</span>
+                    }
+                </td>
+                <td class="data-table__cell data-table__cell--actions">
+                    <a asp-controller="CategoryManagement" asp-action="Create" asp-route-busId="@bus.BusId" class="btn btn-sm btn-success">
+                        <i class="bi bi-plus-circle"></i> Add Category
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@bus.BusId" class="btn btn-sm btn-primary">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@bus.BusId" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+}
+
+<div class="page-actions mt-3">
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-list"></i> View All Buses
+    </a>
+</div>
+

@@ -1,0 +1,25 @@
+@model BusSystem.Admin.Web.Models.BusDto
+@{
+    ViewData["Title"] = "Add Bus";
+}
+
+<partial name="_BackButton" />
+
+<h1>Add Bus</h1>
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="PlateNumber" class="form-label">Plate Number</label>
+        <input asp-for="PlateNumber" class="form-control" required />
+        <span asp-validation-for="PlateNumber" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

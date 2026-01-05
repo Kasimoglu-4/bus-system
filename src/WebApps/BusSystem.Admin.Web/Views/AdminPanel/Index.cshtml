@@ -1,0 +1,94 @@
+@model BusSystem.Admin.Web.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1 class="dashboard__title mb-4">Dashboard</h1>
+<div class="dashboard__stats row">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card card text-white bg-primary h-100">
+            <div class="stat-card__body card-body d-flex flex-column justify-content-between">
+                <div class="stat-card__content">
+                    <h2 class="stat-card__value card-title">@Model.TotalBuses</h2>
+                    <p class="stat-card__label card-text">Total Buses</p>
+                </div>
+                <a asp-controller="BusManagement" asp-action="Index" class="stat-card__link stretched-link text-white">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card card text-white bg-success h-100">
+            <div class="stat-card__body card-body d-flex flex-column justify-content-between">
+                <div class="stat-card__content">
+                    <h2 class="stat-card__value card-title">@Model.TotalCategories</h2>
+                    <p class="stat-card__label card-text">Total Categories</p>
+                </div>
+                <a asp-controller="CategoryManagement" asp-action="Index" class="stat-card__link stretched-link text-white">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card card text-white bg-warning h-100">
+            <div class="stat-card__body card-body d-flex flex-column justify-content-between">
+                <div class="stat-card__content">
+                    <h2 class="stat-card__value card-title">@Model.TotalMenuItems</h2>
+                    <p class="stat-card__label card-text">Total Menu Items</p>
+                </div>
+                <a asp-controller="MenuItemManagement" asp-action="Index" class="stat-card__link stretched-link text-white">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card card text-white bg-danger h-100">
+            <div class="stat-card__body card-body d-flex flex-column justify-content-between">
+                <div class="stat-card__content">
+                    <h2 class="stat-card__value card-title">@Model.InactiveBuses</h2>
+                    <p class="stat-card__label card-text">Inactive Buses</p>
+                </div>
+                <a asp-controller="BusManagement" asp-action="Inactive" class="stat-card__link stretched-link text-white">Review</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="dashboard__recent-title mt-5">Recent Activity</h3>
+<div class="dashboard__recent-items row">
+    <div class="col-lg-6">
+        <h5 class="recent-section__title">Last 5 Buses</h5>
+        <ul class="recent-buses list-group">
+            @foreach (var bus in Model.RecentBuses)
+            {
+                <li class="recent-buses__item list-group-item d-flex justify-content-between align-items-center">
+                    <span class="recent-buses__plate">@bus.PlateNumber</span>
+                    <small class="recent-buses__date text-muted">@bus.CreatedDate.ToLocalTime().ToString("g")</small>
+                    <a asp-controller="BusManagement" asp-action="Edit" asp-route-id="@bus.BusId" class="btn btn-sm btn-link">Edit</a>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="col-lg-6 mt-4 mt-lg-0">
+        <h5 class="recent-section__title">Last 5 Menu Items</h5>
+        <ul class="recent-menu-items list-group">
+            @foreach (var item in Model.RecentMenuItems)
+            {
+                <li class="recent-menu-items__item list-group-item d-flex justify-content-between align-items-center">
+                    <div class="recent-menu-items__info d-flex align-items-center">
+                        @if(!string.IsNullOrWhiteSpace(item.Image))
+                        {
+                            <img src="@item.Image" 
+                                 loading="lazy" 
+                                 width="40" 
+                                 height="40" 
+                                 style="width:40px;height:40px;object-fit:cover;" 
+                                 class="recent-menu-items__image me-2 rounded" 
+                                 alt="@item.Name" />
+                        }
+                        <span class="recent-menu-items__name">@item.Name</span>
+                    </div>
+                    <small class="recent-menu-items__category text-muted">@item.CategoryName</small>
+                    <a asp-controller="MenuItemManagement" asp-action="Edit" asp-route-id="@item.MenuItemId" class="btn btn-sm btn-link">Edit</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+@model IEnumerable<BusSystem.Admin.Web.Models.AdminUserDto>
+@{
+    ViewData["Title"] = "Admin Users";
+}
+
+<partial name="_BackButton" />
+
+<h1 class="page-title mb-4">Admin Users</h1>
+<a asp-action="Create" class="action-button btn btn-primary mb-3">Create New</a>
+<table class="data-table table table-striped">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Created</th>
+            <th>Last Login</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr class="data-table__row">
+            <td class="data-table__cell">@user.UserName</td>
+            <td class="data-table__cell">@($"{user.FirstName} {user.LastName}".Trim())</td>
+            <td class="data-table__cell">@user.Email</td>
+            <td class="data-table__cell">@user.Role</td>
+            <td class="data-table__cell">@user.CreatedDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+            <td class="data-table__cell">@(user.LastLoginDate?.ToLocalTime().ToString("yyyy-MM-dd HH:mm") ?? "Never")</td>
+            <td class="data-table__cell data-table__cell--actions">
+                <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-secondary">Edit</a>
+                <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

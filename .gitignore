@@ -1,0 +1,51 @@
+# Build artifacts
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Aa][Rr][Mm]*/
+[Aa][Rr][Mm]64*/
+[Ww][Ii][Nn]32/
+[Ww][Ii][Nn]64/
+artifacts/
+
+# IDE caches
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Tools and analyzers
+_ReSharper*/
+*.DotSettings.user
+
+# Logs and databases
+*.log
+*.tlog
+*.trn
+*.ldf
+*.mdf
+*.ndf
+*.db
+*.cache
+
+# OS junk
+[Tt]humbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Packages
+*.nupkg
+*.snupkg
+packages/
+
+# Node
+node_modules/
+
+# Rider/JetBrains
+.idea/
+.fleet/

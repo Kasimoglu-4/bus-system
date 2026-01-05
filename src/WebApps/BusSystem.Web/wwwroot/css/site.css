@@ -1,0 +1,203 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  /* Enable smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  margin-bottom: 60px;
+  background: #f8f9fa;
+  /* Hardware acceleration for better scroll performance */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* Optimize repainting */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Hero Banner Section */
+
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+  height: 400px;
+  /* Optimize rendering performance */
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.hero-banner__image {
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;  /* keep bus in view */
+  /* Hardware acceleration for images */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* Prevent image bleeding/aliasing */
+  image-rendering: -webkit-optimize-contrast;
+  /* image-rendering: crisp-edges; */
+}
+
+/* Dark overlay for text readability (optional) */
+/* .hero-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+} */
+
+.hero-banner__branding {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  /* Hardware acceleration for fixed elements */
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.hero-banner__logo {
+  height: 64px;
+  width: 64px;
+  flex-shrink: 0;
+  border-radius: 32px;
+  /* Ensure crisp rendering on all devices */
+  image-rendering: auto;
+}
+
+.hero-banner__title {
+  font-size: 2rem;
+  white-space: nowrap;
+  color: #000 !important;
+  font-weight: 700;
+  /* Better text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ------------------------------------
+   Tablet Responsive Styles (577px - 768px)
+-------------------------------------*/
+@media (min-width: 577px) and (max-width: 768px) {
+  .hero-banner__logo {
+    height: 56px;
+    width: 56px;
+    border-radius: 28px;
+  }
+
+  .hero-banner__title {
+    font-size: 1.75rem;
+  }
+}
+
+/* ------------------------------------
+   Mobile Responsive Styles (max 576px)
+-------------------------------------*/
+@media (max-width: 576px) {
+  .hero-banner {
+    height: auto;          /* allow natural height */
+    max-height: none;
+    /* Reduce will-change on mobile to save memory */
+    will-change: auto;
+  }
+
+  .hero-banner__image {
+    height: auto;
+    object-fit: contain;   /* show full image */
+    /* Keep hardware acceleration on mobile */
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+
+  .hero-banner__branding {
+    top: 12px;
+    left: 12px;
+  }
+
+  .hero-banner__logo {
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    /* 40px meets minimum touch target size */
+  }
+
+  .hero-banner__title {
+    font-size: 1.25rem;
+    /* Better mobile readability - ~17.5px */
+  }
+
+  /* Narrower side-gutters */
+  .container,
+  .container-fluid {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Menu card font shrink */
+  .card-header h4 {
+    font-size: 1rem;
+  }
+  .list-group-item h5 {
+    font-size: 0.95rem;
+  }
+  .list-group-item span {
+    font-size: 0.95rem;
+  }
+  
+  /* Optimize card rendering on mobile */
+  .card {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* CSS containment for better rendering performance */
+    contain: layout style paint;
+  }
+  
+  /* Optimize list items for smoother scrolling */
+  .list-group-item {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Prevent layout thrashing */
+    contain: layout paint;
+  }
+  
+  /* Optimize images in list for better performance */
+  .list-group-item img {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: auto; /* Don't use will-change for multiple images */
+    /* Containment for images */
+    contain: layout paint;
+  }
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}

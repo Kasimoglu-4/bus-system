@@ -1,0 +1,25 @@
+@model BusSystem.Admin.Web.Models.CategoryDto
+@{
+    ViewData["Title"] = "Add Category";
+}
+
+<partial name="_BackButton" />
+
+<h1>Add Category</h1>
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label class="form-label">Bus</label>
+        <select asp-for="BusId" class="form-select" asp-items="ViewBag.Buses" required></select>
+        <span asp-validation-for="BusId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Category Name</label>
+        <input asp-for="Name" class="form-control" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

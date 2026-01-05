@@ -1,0 +1,53 @@
+@model BusSystem.Admin.Web.Models.BusDto
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Delete Bus";
+    var busServiceUrl = Configuration["ApiUrls:BusService"];
+}
+
+<partial name="_BackButton" />
+
+<h1>Delete Bus</h1>
+<h3 class="text-danger">Are you sure you want to delete this bus?</h3>
+<div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <strong>Warning!</strong> This action cannot be undone. The QR code will also be permanently deleted.
+</div>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Bus ID</dt>
+        <dd class="col-sm-9">@Model.BusId</dd>
+        <dt class="col-sm-3">Plate Number</dt>
+        <dd class="col-sm-9"><strong>@Model.PlateNumber</strong></dd>
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+        <dt class="col-sm-3">QR Code</dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.QRCodeUrl))
+            {
+                <img src="@(busServiceUrl)@(Model.QRCodeUrl)" 
+                     alt="QR Code for @Model.PlateNumber" 
+                     loading="lazy" 
+                     width="150" 
+                     height="150" 
+                     style="width:150px;height:150px;" 
+                     class="img-thumbnail" />
+            }
+            else
+            {
+                <span class="text-muted">No QR Code</span>
+            }
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete" asp-route-id="@Model.BusId" method="post">
+        <input type="hidden" asp-for="BusId" />
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Confirm Delete
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-x-circle"></i> Cancel
+        </a>
+    </form>
+</div>

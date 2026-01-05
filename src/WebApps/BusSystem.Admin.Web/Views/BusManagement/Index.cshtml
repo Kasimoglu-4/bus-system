@@ -1,0 +1,81 @@
+@model IEnumerable<BusSystem.Admin.Web.Models.BusDto>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    ViewData["Title"] = "Buses";
+    var busServiceUrl = Configuration["ApiUrls:BusService"];
+}
+
+<partial name="_BackButton" />
+
+<h1 class="page-title mb-4">Buses</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="notification notification--success alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <strong>Success!</strong> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="notification notification--error alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <strong>Error!</strong> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+{
+    <a asp-action="Create" class="action-button btn btn-primary mb-3">
+        <i class="bi bi-plus-circle"></i> Add Bus
+    </a>
+}
+<table class="data-table table table-striped">
+    <thead>
+        <tr>
+            <th>Bus ID</th>
+            <th>Plate Number</th>
+            <th>QR Code</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var bus in Model)
+{
+        <tr class="data-table__row">
+            <td class="data-table__cell">@bus.BusId</td>
+            <td class="data-table__cell">@bus.PlateNumber</td>
+            <td class="data-table__cell data-table__cell--qr">
+                @if (!string.IsNullOrEmpty(bus.QRCodeUrl))
+                {
+                    <img src="@(busServiceUrl)@(bus.QRCodeUrl)" 
+                         alt="QR Code for @bus.PlateNumber" 
+                         loading="lazy" 
+                         width="60" 
+                         height="60" 
+                         style="width:60px;height:60px;" 
+                         class="qr-code img-thumbnail" />
+                    <br />
+                    <a asp-action="DownloadQr" asp-route-id="@bus.BusId" class="qr-code__download btn btn-sm btn-outline-secondary mt-1">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                }
+                else
+                {
+                    <span class="qr-code__placeholder text-muted">No QR Code</span>
+                }
+            </td>
+            <td class="data-table__cell data-table__cell--actions">
+                <a asp-action="Edit" asp-route-id="@bus.BusId" class="btn btn-sm btn-primary">Edit</a>
+                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+                {
+                    <a asp-action="Delete" asp-route-id="@bus.BusId" class="btn btn-sm btn-danger">Delete</a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

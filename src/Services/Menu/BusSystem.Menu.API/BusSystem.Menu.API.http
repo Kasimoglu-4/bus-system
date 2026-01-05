@@ -1,0 +1,6 @@
+@BusSystem.Menu.API_HostAddress = http://localhost:5045
+
+GET {{BusSystem.Menu.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
