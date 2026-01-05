@@ -49,3 +49,17 @@ node_modules/
 # Rider/JetBrains
 .idea/
 .fleet/
+
+# Configuration files with secrets
+appsettings.json
+appsettings.*.json
+!appsettings.Example.json
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# User uploads and generated files
+uploads/
+**/uploads/
