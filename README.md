@@ -33,6 +33,14 @@ Bus menu management system with a passenger-facing site and an admin portal buil
 - SQL Server
 - Visual Studio 2022 or VS Code
 
+### Initial Configuration
+Before running the project, you need to set up your configuration files:
+
+1. Copy `appsettings.Example.json` to `appsettings.json` in each service/web app
+2. Update the connection strings with your SQL Server instance
+3. Ensure all services use the same JWT secret key
+4. Configure email settings in Identity API (optional for password reset)
+
 ### Run Microservices
 ```powershell
 cd src\Services\Bus\BusSystem.Bus.API
